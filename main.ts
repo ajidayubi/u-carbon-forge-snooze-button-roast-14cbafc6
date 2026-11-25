@@ -16,6 +16,9 @@ if (LINE.includes("\n") || LINE.includes("\r")) {
 if (LINE.trim().length === 0) {
   throw new Error("entry must not be blank");
 }
+if (LINE !== LINE.trim()) {
+  throw new Error("entry must not start or end with whitespace");
+}
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = "/output";
@@ -27,6 +30,9 @@ writeFileSync(outFile, LINE, "utf8");
 const back = readFileSync(outFile, "utf8");
 if (back !== LINE) {
   throw new Error("read-back mismatch: /output/entry.txt does not match the entry");
+}
+if (Buffer.byteLength(back, "utf8") !== Buffer.byteLength(LINE, "utf8")) {
+  throw new Error("read-back mismatch: /output/entry.txt byte length differs from the entry");
 }
 
 console.log(LINE);
